@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 160" width="560" height="160">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Alexandria:wght@800&amp;display=swap');
+    .ar{font-family:Alexandria,'Segoe UI',Tahoma,sans-serif;font-weight:800}
+  </style>
+  <rect width="560" height="160" rx="18" fill="#23272B"/>
+  <rect x="0" y="152" width="560" height="8" fill="url(#road)"/>
+  <defs>
+    <pattern id="road" width="46" height="8" patternUnits="userSpaceOnUse"><rect width="28" height="8" fill="#F5B800"/></pattern>
+  </defs>
+  <g transform="translate(410 24) scale(2.8)">
+    <rect x="1" y="1" width="38" height="38" rx="9" fill="#F5B800"/>
+    <path d="M5 28.5v-4.2c0-1.4 1-2.5 2.4-2.8l4.6-1 3.6-3.9c.6-.7 1.5-1 2.4-1h5.6c.9 0 1.8.4 2.4 1.1l3.3 3.8h1.6c1.8 0 3.1 1.4 3.1 3.1v4.9z" fill="#1D1600"/>
+    <path d="M16.2 20.3l2.6-2.9h4.3l2.4 2.9z" fill="#F5B800"/>
+    <circle cx="11.6" cy="29" r="3.5" fill="#1D1600" stroke="#F5B800" stroke-width="1.4"/>
+    <circle cx="28.4" cy="29" r="3.5" fill="#1D1600" stroke="#F5B800" stroke-width="1.4"/>
+    <path d="M22.5 13.2 33 6.2M27.2 5.6H33.4V11.8" fill="none" stroke="#1D1600" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  <text x="385" y="86" text-anchor="end" direction="rtl" class="ar" font-size="56" fill="#FFFFFF">كار فليب</text>
+  <text x="385" y="124" text-anchor="end" class="ar" font-size="22" fill="#F5B800" letter-spacing="3">CarFlip</text>
+</svg>
