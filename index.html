@@ -4,6 +4,14 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>كار فليب — حاسبة أرباح السيارات المصدومة</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#23272B">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="كار فليب">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@500;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -165,16 +173,31 @@ table.tbl{width:100%; border-collapse:collapse; font-size:.9rem}
         <span class="text-[11px] opacity-70 block">محلل أرباح السيارات المصدومة</span>
       </span>
     </a>
+    <div class="flex items-center gap-2">
+    <button id="installBtn" class="btn btn-primary hidden !min-h-[38px] !px-3" aria-label="تثبيت التطبيق">⬇ تثبيت التطبيق</button>
     <div id="userBox" class="hidden items-center gap-2">
       <span id="saveState" class="text-xs opacity-70 hidden md:inline" aria-live="polite"></span>
       <span id="userEmail" class="userchip hidden sm:inline"></span>
       <button id="settingsBtn" class="btn btn-ghost !text-white !border-white/25 hover:!bg-white/10 !min-h-[38px] !px-3">الإعدادات</button>
       <button id="logoutBtn" class="btn btn-ghost !text-white !border-white/25 hover:!bg-white/10 !min-h-[38px] !px-3">خروج</button>
     </div>
+    </div>
   </div>
 </header>
 
 <main id="app" class="max-w-6xl mx-auto px-4 py-6 pb-28 lg:pb-10"></main>
+
+<div id="iosDlg" class="hidden fixed inset-0 z-30 bg-black/50 grid place-items-center p-4" role="dialog" aria-modal="true" aria-labelledby="iosTitle">
+  <div class="panel w-full max-w-sm p-5">
+    <h2 id="iosTitle" class="sec-title mb-3">تثبيت كار فليب على الآيفون</h2>
+    <ol class="grid gap-2 text-sm list-decimal pr-5">
+      <li>افتحي الموقع في متصفح <b>Safari</b>.</li>
+      <li>اضغطي زر المشاركة <span aria-hidden="true">⬆️</span> أسفل الشاشة.</li>
+      <li>اختاري <b>«إضافة إلى الشاشة الرئيسية»</b> ثم «إضافة».</li>
+    </ol>
+    <div class="flex justify-end mt-5"><button id="iosClose" class="btn btn-ink">حسناً</button></div>
+  </div>
+</div>
 
 <div id="settingsDlg" class="hidden fixed inset-0 z-30 bg-black/50 grid place-items-center p-4" role="dialog" aria-modal="true" aria-labelledby="setTitle">
   <div class="panel w-full max-w-md p-5">
@@ -871,6 +894,20 @@ $('#logoutBtn').onclick=async()=>{ await Promise.all(Object.keys(pending).map(id
 
 let toastT;
 function toast(msg){ document.querySelector('.toast')?.remove(); const t=document.createElement('div'); t.className='toast'; t.setAttribute('role','status'); t.textContent=msg; document.body.appendChild(t); clearTimeout(toastT); toastT=setTimeout(()=>t.remove(),2800); }
+
+/* ---------- التثبيت كتطبيق ---------- */
+if('serviceWorker' in navigator){ window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(e=>console.warn('SW',e))); }
+const isStandalone=()=>matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
+const isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+let deferredPrompt=null; const installBtn=$('#installBtn');
+window.addEventListener('beforeinstallprompt',e=>{ e.preventDefault(); deferredPrompt=e; if(!isStandalone()) installBtn.classList.remove('hidden'); });
+window.addEventListener('appinstalled',()=>{ installBtn.classList.add('hidden'); deferredPrompt=null; toast('ثُبّت كار فليب على جهازك'); });
+if(isIOS && !isStandalone()) installBtn.classList.remove('hidden');
+installBtn.onclick=async()=>{
+  if(deferredPrompt){ deferredPrompt.prompt(); const {outcome}=await deferredPrompt.userChoice; if(outcome==='accepted') installBtn.classList.add('hidden'); deferredPrompt=null; }
+  else if(isIOS) $('#iosDlg').classList.remove('hidden');
+};
+$('#iosClose').onclick=()=>$('#iosDlg').classList.add('hidden');
 
 /* ---------- التشغيل ---------- */
 app.addEventListener('input',onInput); app.addEventListener('change',onInput);
