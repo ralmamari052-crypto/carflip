@@ -1,0 +1,1080 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>كار فليب</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#23272B">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="كار فليب">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@500;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com/3.4.17"></script>
+<style>
+:root{
+  --bg:#E4E8EB; --surface:#FFFFFF; --surface-2:#F2F4F6; --ink:#15233B; --muted:#5A6778; --line:#CBD2D9;
+  --tag:#F5B800; --tag-ink:#1D1600; --gain:#0B8F63; --gain-bg:#DDF4EA; --loss:#D6334A; --loss-bg:#FCE6EA;
+  --asphalt:#23272B;
+  --steel:#2F5A8A; --focus:#2F5A8A;
+  --c1:#2F5A8A; --c2:#7457A3; --c3:#2A8796; --c4:#C2850E; --c5:#5D6B7A; --c6:#93AEC7;
+  color-scheme:light;
+  box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0F151D; --surface:#17202B; --surface-2:#1E2936; --ink:#E6EBF1; --muted:#93A2B4; --line:#2C3A4A;
+    --tag:#F5B800; --tag-ink:#1D1600; --gain:#34D399; --gain-bg:#12302A; --loss:#FB7185; --loss-bg:#3B1A24;
+    --steel:#86AEDD; --focus:#86AEDD;
+    --c1:#5B8BC4; --c2:#9C82C9; --c3:#4FB3C2; --c4:#E0A32E; --c5:#8796A6; --c6:#C1D3E3;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0F151D; --surface:#17202B; --surface-2:#1E2936; --ink:#E6EBF1; --muted:#93A2B4; --line:#2C3A4A;
+  --gain:#34D399; --gain-bg:#12302A; --loss:#FB7185; --loss-bg:#3B1A24; --steel:#86AEDD; --focus:#86AEDD;
+  --c1:#5B8BC4; --c2:#9C82C9; --c3:#4FB3C2; --c4:#E0A32E; --c5:#8796A6; --c6:#C1D3E3; color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px); height:auto}
+body{background:var(--bg); color:var(--ink); font-family:"IBM Plex Sans Arabic","Segoe UI",Tahoma,Arial,sans-serif; line-height:1.6; -webkit-font-smoothing:antialiased}
+body::before{content:""; position:fixed; inset:0 0 auto; height:env(safe-area-inset-top,0px); z-index:10; background:var(--asphalt)}
+.display{font-family:"Alexandria","IBM Plex Sans Arabic",Tahoma,sans-serif}
+.num{font-variant-numeric:tabular-nums; direction:ltr; unicode-bidi:isolate}
+:focus-visible{outline:2px solid var(--focus); outline-offset:2px}
+@media (prefers-reduced-motion: reduce){*{transition:none!important; animation:none!important}}
+
+/* header */
+.topbar{position:sticky; top:env(safe-area-inset-top,0px); z-index:20; background:var(--asphalt); color:#fff}
+.topbar::after{content:""; position:absolute; inset:auto 0 0 0; height:3px; background:repeating-linear-gradient(90deg,var(--tag) 0 28px,transparent 28px 46px)}
+.logo-mark{display:block; width:42px; height:42px; flex:none}
+
+/* panels */
+.panel{background:var(--surface); border:1px solid var(--line); border-radius:10px}
+.sec-title{font-family:Alexandria,sans-serif; font-weight:700; font-size:1.02rem}
+.hint{color:var(--muted); font-size:.82rem}
+label.fld{display:flex; flex-direction:column; gap:4px; font-size:.84rem; color:var(--muted); font-weight:500}
+.inp{width:100%; background:var(--surface-2); border:1px solid var(--line); color:var(--ink); border-radius:7px; padding:9px 11px; font-size:.95rem; font-family:inherit; min-height:42px}
+.inp:focus{outline:none; border-color:var(--focus); box-shadow:0 0 0 3px color-mix(in srgb, var(--focus) 22%, transparent)}
+.inp[type=number]{font-variant-numeric:tabular-nums}
+.unit-wrap{position:relative}
+.unit-wrap .inp{padding-left:46px}
+.unit{position:absolute; left:10px; top:50%; transform:translateY(-50%); font-size:.78rem; color:var(--muted); pointer-events:none}
+textarea.inp{min-height:76px; resize:vertical}
+
+.btn{display:inline-flex; align-items:center; justify-content:center; gap:8px; border-radius:8px; padding:9px 16px; font-weight:600; font-size:.92rem; min-height:42px; cursor:pointer; border:1px solid transparent; font-family:inherit}
+.btn-primary{background:var(--tag); color:var(--tag-ink)}
+.btn-primary:hover{filter:brightness(.95)}
+.btn-ink{background:var(--ink); color:var(--surface)}
+.btn-ghost{background:transparent; border-color:var(--line); color:var(--ink)}
+.btn-ghost:hover{background:var(--surface-2)}
+.btn-danger{background:transparent; color:var(--loss); border-color:color-mix(in srgb,var(--loss) 40%,transparent)}
+.btn-danger.armed{background:var(--loss); color:#fff}
+.btn:disabled{opacity:.55; cursor:not-allowed}
+.icon-btn{width:38px; height:38px; display:inline-grid; place-items:center; border-radius:7px; border:1px solid var(--line); background:var(--surface); color:var(--muted); cursor:pointer}
+.icon-btn:hover{color:var(--loss); border-color:var(--loss)}
+
+/* lot tag card */
+.lot{position:relative; background:var(--surface); border:1px solid var(--line); border-radius:10px; overflow:hidden; display:flex; flex-direction:column; text-align:right; cursor:pointer; color:inherit}
+.lot:hover{border-color:var(--steel)}
+.lot-strip{background:var(--tag); color:var(--tag-ink); display:flex; justify-content:space-between; align-items:center; padding:6px 14px; font-family:Alexandria,sans-serif; font-weight:700; font-size:.8rem}
+.lot-strip .hole{width:10px; height:10px; border-radius:50%; background:var(--bg); border:2px solid color-mix(in srgb,var(--tag-ink) 35%, transparent)}
+.lot-photo{aspect-ratio:16/9; background:var(--surface-2); display:grid; place-items:center; color:var(--muted); overflow:hidden}
+.lot-photo img{width:100%; height:100%; object-fit:cover}
+
+.pill{display:inline-flex; align-items:center; gap:6px; font-size:.76rem; font-weight:600; padding:3px 10px; border-radius:999px; border:1px solid var(--line); white-space:nowrap}
+.pill .dot{width:7px; height:7px; border-radius:50%}
+.st-draft .dot{background:var(--c5)} .st-shipping .dot{background:var(--c1)} .st-repair .dot{background:var(--c4)} .st-ready .dot{background:var(--c3)} .st-sold .dot{background:var(--gain)}
+
+.chip{padding:6px 14px; border-radius:999px; border:1px solid var(--line); background:var(--surface); font-size:.85rem; font-weight:500; cursor:pointer; color:var(--ink); white-space:nowrap}
+.chip[aria-pressed="true"]{background:var(--ink); color:var(--surface); border-color:var(--ink)}
+
+/* status stepper */
+.steps{display:flex; gap:0; overflow-x:auto}
+.step{flex:1 0 auto; padding:9px 12px; border:1px solid var(--line); background:var(--surface-2); font-size:.83rem; font-weight:600; color:var(--muted); cursor:pointer; white-space:nowrap; margin-inline-start:-1px}
+.step:first-child{border-radius:0 8px 8px 0; margin-inline-start:0}
+.step:last-child{border-radius:8px 0 0 8px}
+.step.done{color:var(--ink); background:var(--surface)}
+.step.cur{background:var(--ink); color:var(--surface); border-color:var(--ink)}
+
+/* breakdown */
+.bar{display:flex; height:16px; border-radius:4px; overflow:hidden; background:var(--surface-2)}
+.bar span{display:block; height:100%; transition:width .35s ease}
+.legend-row{display:grid; grid-template-columns:12px 1fr auto auto; gap:8px; align-items:center; font-size:.86rem; padding:5px 0; border-bottom:1px dashed var(--line)}
+.legend-row:last-child{border-bottom:0}
+.sw{width:10px; height:10px; border-radius:2px}
+
+table.tbl{width:100%; border-collapse:collapse; font-size:.9rem}
+.tbl th{font-weight:600; color:var(--muted); font-size:.78rem; text-align:right; padding:6px 8px; border-bottom:1px solid var(--line)}
+.tbl td{padding:8px; border-bottom:1px solid var(--line)}
+.tbl tr:last-child td{border-bottom:0}
+.tbl tr.hl td{background:color-mix(in srgb,var(--tag) 14%, transparent)}
+
+.gain{color:var(--gain)} .loss{color:var(--loss)}
+.verdict{border-radius:8px; padding:12px 14px; font-weight:600}
+.verdict.good{background:var(--gain-bg); color:var(--gain)}
+.verdict.bad{background:var(--loss-bg); color:var(--loss)}
+.verdict.mid{background:color-mix(in srgb,var(--tag) 18%, transparent); color:var(--ink)}
+
+.line-row{display:grid; gap:8px; align-items:end}
+.parts-row{grid-template-columns:1fr 70px 120px 38px}
+.labor-row{grid-template-columns:1fr 130px 38px}
+@media (max-width:520px){ .parts-row{grid-template-columns:1fr 60px 100px 38px} .labor-row{grid-template-columns:1fr 110px 38px} }
+
+.ai-out h3{font-family:Alexandria,sans-serif; font-weight:700; font-size:1rem; margin:16px 0 6px}
+.ai-out h3:first-child{margin-top:0}
+.ai-out p{margin:4px 0}
+.ai-out ul{margin:4px 0; padding-inline-start:20px; list-style:disc}
+.ai-out li{margin:3px 0}
+
+.thumbs{display:grid; grid-template-columns:repeat(auto-fill,minmax(110px,1fr)); gap:8px}
+.thumb{position:relative; aspect-ratio:4/3; border-radius:8px; overflow:hidden; background:var(--surface-2); border:1px solid var(--line)}
+.thumb img{width:100%; height:100%; object-fit:cover; cursor:zoom-in}
+.thumb button{position:absolute; top:4px; left:4px; width:28px; height:28px; border-radius:6px; background:rgba(0,0,0,.6); color:#fff; border:0; cursor:pointer}
+
+.mobile-bar{position:fixed; bottom:0; inset-inline:0; z-index:15; background:var(--asphalt); border-top:3px solid var(--tag); color:#fff; padding:10px 16px; padding-bottom:calc(10px + env(safe-area-inset-bottom,0px)); display:flex; justify-content:space-between; align-items:center; gap:12px}
+@media (min-width:1024px){ .mobile-bar{display:none} }
+.lightbox{position:fixed; inset:0; z-index:40; background:rgba(5,8,12,.88); display:grid; place-items:center; padding:20px}
+.lightbox img{max-width:100%; max-height:100%; border-radius:8px}
+.toast{position:fixed; bottom:calc(84px + env(safe-area-inset-bottom,0px)); left:50%; transform:translateX(-50%); z-index:50; background:var(--ink); color:var(--surface); padding:10px 18px; border-radius:8px; font-size:.9rem; box-shadow:0 6px 20px rgba(0,0,0,.25)}
+.skeleton{background:linear-gradient(90deg,var(--surface-2),var(--line),var(--surface-2)); background-size:200% 100%; animation:sh 1.2s infinite; border-radius:6px}
+@keyframes sh{to{background-position:-200% 0}}
+</style>
+<style>
+.auth-wrap{min-height:calc(100vh - 160px); display:grid; place-items:center}
+.tabs{display:grid; grid-template-columns:1fr 1fr; background:var(--surface-2); border-radius:9px; padding:4px; gap:4px}
+.tabs button{padding:8px; border-radius:7px; font-weight:600; color:var(--muted); cursor:pointer}
+.tabs button[aria-selected="true"]{background:var(--surface); color:var(--ink); box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.gbtn{background:var(--surface); border:1px solid var(--line); color:var(--ink); width:100%}
+.gbtn:hover{background:var(--surface-2)}
+.or{display:flex; align-items:center; gap:10px; color:var(--muted); font-size:.82rem}
+.or::before,.or::after{content:""; flex:1; height:1px; background:var(--line)}
+.err{background:var(--loss-bg); color:var(--loss); border-radius:8px; padding:9px 12px; font-size:.88rem}
+.ok{background:var(--gain-bg); color:var(--gain); border-radius:8px; padding:9px 12px; font-size:.88rem}
+.setup ol{counter-reset:s; display:grid; gap:14px}
+.setup li{counter-increment:s; display:grid; grid-template-columns:34px 1fr; gap:12px}
+.setup li::before{content:counter(s); width:30px; height:30px; border-radius:50%; background:var(--tag); color:var(--tag-ink); display:grid; place-items:center; font-weight:700; font-family:Alexandria,sans-serif}
+.setup code{background:var(--surface-2); border:1px solid var(--line); padding:1px 6px; border-radius:5px; font-size:.85em; direction:ltr; unicode-bidi:isolate}
+.userchip{font-size:.8rem; opacity:.8; max-width:180px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; direction:ltr}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between gap-3">
+    <a href="#garage" class="flex items-center gap-3 text-white no-underline">
+      <svg class="logo-mark" viewBox="0 0 40 40" aria-hidden="true"><rect x="1" y="1" width="38" height="38" rx="9" fill="#F5B800"/><path d="M5 28.5v-4.2c0-1.4 1-2.5 2.4-2.8l4.6-1 3.6-3.9c.6-.7 1.5-1 2.4-1h5.6c.9 0 1.8.4 2.4 1.1l3.3 3.8h1.6c1.8 0 3.1 1.4 3.1 3.1v4.9z" fill="#1D1600"/><path d="M16.2 20.3l2.6-2.9h4.3l2.4 2.9z" fill="#F5B800"/><circle cx="11.6" cy="29" r="3.5" fill="#1D1600" stroke="#F5B800" stroke-width="1.4"/><circle cx="28.4" cy="29" r="3.5" fill="#1D1600" stroke="#F5B800" stroke-width="1.4"/><path d="M22.5 13.2 33 6.2M27.2 5.6H33.4V11.8" fill="none" stroke="#1D1600" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span class="leading-tight">
+        <span class="display font-bold text-lg block">كار فليب</span>
+      </span>
+    </a>
+    <div class="flex items-center gap-2">
+    <button id="installBtn" class="btn btn-primary hidden !min-h-[38px] !px-3" aria-label="تثبيت التطبيق">⬇ تثبيت التطبيق</button>
+    <div id="userBox" class="hidden items-center gap-2">
+      <span id="saveState" class="text-xs opacity-70 hidden md:inline" aria-live="polite"></span>
+      <span id="userEmail" class="userchip hidden sm:inline"></span>
+      <button id="teamBtn" class="btn btn-ghost hidden !text-white !border-white/25 hover:!bg-white/10 !min-h-[38px] !px-3">الفريق</button>
+      <button id="settingsBtn" class="btn btn-ghost !text-white !border-white/25 hover:!bg-white/10 !min-h-[38px] !px-3">الإعدادات</button>
+      <button id="logoutBtn" class="btn btn-ghost !text-white !border-white/25 hover:!bg-white/10 !min-h-[38px] !px-3">خروج</button>
+    </div>
+    </div>
+  </div>
+</header>
+
+<main id="app" class="max-w-6xl mx-auto px-4 py-6 pb-28 lg:pb-10"></main>
+
+<div id="iosDlg" class="hidden fixed inset-0 z-30 bg-black/50 grid place-items-center p-4" role="dialog" aria-modal="true" aria-labelledby="iosTitle">
+  <div class="panel w-full max-w-sm p-5">
+    <h2 id="iosTitle" class="sec-title mb-3">تثبيت كار فليب على الآيفون</h2>
+    <ol class="grid gap-2 text-sm list-decimal pr-5">
+      <li>افتحي الموقع في متصفح <b>Safari</b>.</li>
+      <li>اضغطي زر المشاركة <span aria-hidden="true">⬆️</span> أسفل الشاشة.</li>
+      <li>اختاري <b>«إضافة إلى الشاشة الرئيسية»</b> ثم «إضافة».</li>
+    </ol>
+    <div class="flex justify-end mt-5"><button id="iosClose" class="btn btn-ink">حسناً</button></div>
+  </div>
+</div>
+
+<div id="settingsDlg" class="hidden fixed inset-0 z-30 bg-black/50 grid place-items-center p-4" role="dialog" aria-modal="true" aria-labelledby="setTitle">
+  <div class="panel w-full max-w-md p-5">
+    <h2 id="setTitle" class="sec-title mb-1">الإعدادات</h2>
+    <p class="hint mb-4">تُطبَّق الافتراضات على السيارات الجديدة فقط.</p>
+    <div class="grid gap-3">
+      <label class="fld">العملة المحلية وسوق البيع
+        <select id="setCurrency" class="inp"></select>
+      </label>
+      <div class="grid grid-cols-2 gap-3">
+        <label class="fld">الجمارك الافتراضية %<input id="setCustoms" type="number" step="0.1" class="inp"></label>
+        <label class="fld">ضريبة القيمة المضافة %<input id="setVat" type="number" step="0.1" class="inp"></label>
+      </div>
+      <label class="fld">سعر صرف الدولار الافتراضي<input id="setRate" type="number" step="0.0001" class="inp"></label>
+      <label class="fld">المظهر
+        <select id="setTheme" class="inp"><option value="">حسب الجهاز</option><option value="light">فاتح</option><option value="dark">داكن</option></select>
+      </label>
+    </div>
+    <div class="flex gap-2 justify-end mt-5">
+      <button id="setCancel" class="btn btn-ghost">إلغاء</button>
+      <button id="setSave" class="btn btn-ink">حفظ الإعدادات</button>
+    </div>
+  </div>
+</div>
+<script type="module">
+/* =====================================================================
+   ١) الصقي هنا بيانات الربط من Firebase (إعدادات المشروع ← تطبيقاتك)
+   ===================================================================== */
+const firebaseConfig = {
+  apiKey: "AIzaSyBg0Nqs3Cw8qhgF-VpkHeP-aXKh4YwfdWU",
+  authDomain: "carflip-31caf.firebaseapp.com",
+  projectId: "carflip-31caf",
+  storageBucket: "carflip-31caf.firebasestorage.app",
+  messagingSenderId: "807531849434",
+  appId: "1:807531849434:web:c1d7d3e9fbf30ae959a7e3"
+};
+/* ٢) نموذج Gemini المستخدم في التقرير الذكي (غيّريه إن أوقفته Google) */
+const GEMINI_MODEL = "gemini-2.5-flash";
+/* ٣) مفتاح موقع Fraud Defense (reCAPTCHA Enterprise) العام لحماية App Check */
+/* ٤) بريد المدير: صاحب هذا البريد (عند الدخول بحساب Google) يرى كل شيء ويدير الفريق */
+const ADMIN_EMAIL = "s.m.almamari60@gmail.com";
+const RECAPTCHA_SITE_KEY = "6LduRg0uAAAAAFAAVrWtPUn7Sla_0OgNl-cqANNM";
+/* ===================================================================== */
+
+const SDK = "https://www.gstatic.com/firebasejs/11.10.0/";
+const configured = !String(firebaseConfig.apiKey).startsWith("PASTE");
+
+const STATUSES=[{k:'draft',l:'مسودة'},{k:'shipping',l:'قيد الشحن'},{k:'repair',l:'قيد التصليح'},{k:'ready',l:'جاهزة للبيع'},{k:'sold',l:'تم البيع'}];
+const ST=Object.fromEntries(STATUSES.map(s=>[s.k,s.l]));
+const CUR={
+  OMR:{l:'ر.ع',d:3,rate:0.385,m:'سلطنة عُمان',n:'ريال عُماني'},
+  SAR:{l:'ر.س',d:2,rate:3.75,m:'السعودية',n:'ريال سعودي'},
+  AED:{l:'د.إ',d:2,rate:3.6725,m:'الإمارات',n:'درهم إماراتي'},
+  KWD:{l:'د.ك',d:3,rate:0.307,m:'الكويت',n:'دينار كويتي'},
+  QAR:{l:'ر.ق',d:2,rate:3.64,m:'قطر',n:'ريال قطري'},
+  BHD:{l:'د.ب',d:3,rate:0.376,m:'البحرين',n:'دينار بحريني'},
+  USD:{l:'$',d:2,rate:1,m:'السوق المحلي',n:'دولار أمريكي'}
+};
+const SEG=[
+  {k:'cif',l:'الشراء والمزاد والشحن',c:'var(--c1)'},
+  {k:'duties',l:'الجمارك والضرائب',c:'var(--c2)'},
+  {k:'fees',l:'التخليص والنقل والتسجيل',c:'var(--c3)'},
+  {k:'parts',l:'قطع الغيار',c:'var(--c4)'},
+  {k:'labor',l:'أجور الورش',c:'var(--c5)'},
+  {k:'cleaning',l:'التنظيف والتلميع',c:'var(--c6)'}
+];
+const MARGINS=[15,20,25,30];
+const DEFAULT_SETTINGS={currency:'OMR',customsPct:5,vatPct:5,rate:0.385,theme:''};
+
+let settings={...DEFAULT_SETTINGS}; try{ settings.theme=localStorage.getItem('carflip-theme')||''; }catch(e){}
+const cars=new Map();
+let view={name:'garage',id:null}, filter='all';
+let FB=null, user=null, unsubPhotos=null, photos=[];
+const pending={}, inflight={};
+let aiRunning=false;
+
+const $=s=>document.querySelector(s);
+const app=$('#app');
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const n=v=>{const x=parseFloat(v);return isFinite(x)?x:0};
+const cur=()=>CUR[settings.currency]||CUR.OMR;
+function fmt(v,dec){const c=cur();const d=dec??c.d;return new Intl.NumberFormat('en-US',{minimumFractionDigits:d,maximumFractionDigits:d}).format(v||0)}
+const money=v=>`<span class="num">${fmt(v)}</span> ${cur().l}`;
+const usd=v=>`<span class="num">$${fmt(v,0)}</span>`;
+const pct=v=>`<span class="num">${isFinite(v)?(v*100).toFixed(1):'—'}%</span>`;
+const uid=()=>'c'+Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+const lid=()=>Math.random().toString(36).slice(2,9);
+const clone=o=>JSON.parse(JSON.stringify(o));
+
+function applyTheme(){ if(settings.theme) document.documentElement.setAttribute('data-theme',settings.theme); else document.documentElement.removeAttribute('data-theme'); }
+
+function newCar(){
+  const t=Date.now();
+  return {id:uid(),createdAt:t,updatedAt:t,status:'draft',make:'',model:'',year:'',lot:'',vin:'',auction:'Copart',damage:'',mileage:'',titleType:'Salvage',notes:'',
+    rate:settings.rate,
+    buy:{price:0,auctionFee:0,usInland:0,sea:0,insurance:0},
+    local:{customsPct:settings.customsPct,vatPct:settings.vatPct,clearance:0,portTransport:0,registration:0},
+    parts:[{id:lid(),name:'',qty:1,price:0}],
+    labor:[{id:lid(),name:'سمكرة',cost:0},{id:lid(),name:'صبغ',cost:0},{id:lid(),name:'ميكانيك وكهرباء',cost:0}],
+    cleaning:0, marketPrice:0, salePrice:0, customPct:35, targetPct:20, thumb:'', photoCount:0, ai:null, ownerUid:user.uid, ownerName:myName()};
+}
+
+/* ---------- الحسابات ---------- */
+function calc(c){
+  const b=c.buy||{}, l=c.local||{}; const rate=n(c.rate)||1;
+  const usdOther=n(b.auctionFee)+n(b.usInland)+n(b.sea)+n(b.insurance);
+  const usdTotal=n(b.price)+usdOther;
+  const cif=usdTotal*rate;
+  const customs=cif*n(l.customsPct)/100;
+  const vat=(cif+customs)*n(l.vatPct)/100;
+  const fees=n(l.clearance)+n(l.portTransport)+n(l.registration);
+  const parts=(c.parts||[]).reduce((s,p)=>s+n(p.qty||1)*n(p.price),0);
+  const labor=(c.labor||[]).reduce((s,p)=>s+n(p.cost),0);
+  const cleaning=n(c.cleaning);
+  const seg={cif,duties:customs+vat,fees,parts,labor,cleaning};
+  const total=cif+customs+vat+fees+parts+labor+cleaning;
+  const market=n(c.marketPrice), sale=n(c.salePrice);
+  const r={usdTotal,usdOther,cif,customs,vat,fees,parts,labor,cleaning,seg,total,market,sale};
+  if(market>0){ r.mProfit=market-total; r.mMargin=r.mProfit/market; r.mRoi=total?r.mProfit/total:NaN; }
+  if(c.status==='sold' && sale>0){ r.aProfit=sale-total; r.aRoi=total?r.aProfit/total:NaN; }
+  const k=rate*(1+n(l.customsPct)/100)*(1+n(l.vatPct)/100);
+  const fixedLocal=fees+parts+labor+cleaning;
+  if(market>0 && k>0){ const T=market/(1+n(c.targetPct)/100); r.maxBid=(T-fixedLocal)/k-usdOther; }
+  return r;
+}
+
+/* ---------- Firebase ---------- */
+async function initFirebase(){
+  const [appM,authM,fsM,aiM,acM]=await Promise.all([
+    import(SDK+'firebase-app.js'), import(SDK+'firebase-auth.js'), import(SDK+'firebase-firestore.js'), import(SDK+'firebase-ai.js'), import(SDK+'firebase-app-check.js')
+  ]);
+  const fbApp=appM.initializeApp(firebaseConfig);
+  if(['localhost','127.0.0.1'].includes(location.hostname)) self.FIREBASE_APPCHECK_DEBUG_TOKEN=true;
+  try{ acM.initializeAppCheck(fbApp,{provider:new acM.ReCaptchaEnterpriseProvider(RECAPTCHA_SITE_KEY),isTokenAutoRefreshEnabled:true}); }catch(e){ console.warn('AppCheck',e); }
+  const auth=authM.getAuth(fbApp); auth.languageCode='ar';
+  let db;
+  try{ db=fsM.initializeFirestore(fbApp,{localCache:fsM.persistentLocalCache({tabManager:fsM.persistentMultipleTabManager()})}); }
+  catch(e){ db=fsM.getFirestore(fbApp); }
+  let model=null;
+  try{ const ai=aiM.getAI(fbApp,{backend:new aiM.GoogleAIBackend()}); model=aiM.getGenerativeModel(ai,{model:GEMINI_MODEL}); }catch(e){ console.warn('AI',e); }
+  FB={auth,db,model,A:authM,F:fsM};
+  authM.onAuthStateChanged(auth,u=>{ if(u) startSession(u); else endSession(); });
+}
+const dref=(...p)=>FB.F.doc(FB.db,...p);
+const carsCol=()=>FB.F.collection(FB.db,'cars');
+const photosCol=id=>FB.F.collection(FB.db,'cars',id,'photos');
+
+/* ---------- الأدوار والصلاحيات ---------- */
+let role='none', me=null, members=new Map(), invites=[], ownerFilter='all', unsubs=[];
+const PERMS=[{k:'create',l:'إضافة سيارات'},{k:'edit',l:'تعديل سياراته'},{k:'delete',l:'حذف سياراته'}];
+const isAdmin=()=>role==='admin';
+const myName=()=>isAdmin()?'المدير':(me?.name||user?.email||'');
+const can=p=>isAdmin()||(role==='member'&&me?.active&&me?.perms?.[p]===true);
+const canEditCar=c=>isAdmin()||(c.ownerUid===user.uid&&(can('edit')||(can('create')&&c.status==='draft')));
+const canDeleteCar=c=>isAdmin()||(c.ownerUid===user.uid&&can('delete'));
+const ownerLabel=c=>c.ownerUid===user?.uid?'أنا':(c.ownerName||members.get(c.ownerUid)?.name||'موظف');
+
+function readInvite(){ const q=new URLSearchParams(location.search).get('invite'); if(q){ sessionStorage.setItem('carflip-invite',q); history.replaceState(null,'',location.pathname+location.hash); } return sessionStorage.getItem('carflip-invite'); }
+let pendingInvite=readInvite();
+
+async function startSession(u){
+  user=u; cars.clear(); members.clear(); invites=[];
+  $('#userBox').classList.remove('hidden'); $('#userBox').classList.add('flex');
+  $('#userEmail').textContent=u.email||u.displayName||'';
+  app.innerHTML=`<div class="grid sm:grid-cols-3 gap-4">${'<div class="skeleton h-40"></div>'.repeat(3)}</div>`;
+  const email=(u.email||'').toLowerCase();
+  if(email===ADMIN_EMAIL.toLowerCase() && u.emailVerified){ role='admin'; }
+  else{
+    let snap=null; try{ snap=await FB.F.getDoc(dref('members',u.uid)); }catch(e){}
+    if((!snap||!snap.exists()) && pendingInvite){ await joinWithInvite(pendingInvite); try{ snap=await FB.F.getDoc(dref('members',u.uid)); }catch(e){} }
+    if(snap&&snap.exists()){ me=snap.data(); role=me.active?'member':'suspended'; } else role='none';
+  }
+  $('#teamBtn').classList.toggle('hidden',!isAdmin());
+  $('#settingsBtn').classList.toggle('hidden',!isAdmin());
+  if(role==='none'||role==='suspended'){ renderNoAccess(); return; }
+  subscribe();
+}
+async function joinWithInvite(id){
+  try{
+    const inv=await FB.F.getDoc(dref('invites',id));
+    if(!inv.exists()){ toast('رابط الدعوة غير صحيح'); return; }
+    const d=inv.data();
+    if(!d.active){ toast('رابط الدعوة موقوف. اطلب رابطاً جديداً من المدير.'); return; }
+    if(d.usedBy && d.usedBy!==user.uid){ toast('هذا الرابط استُخدم من حساب آخر.'); return; }
+    const b=FB.F.writeBatch(FB.db);
+    b.set(dref('members',user.uid),{name:d.name,email:user.email||'',perms:d.perms,active:true,inviteId:id,joinedAt:Date.now()});
+    b.update(dref('invites',id),{usedBy:user.uid,usedEmail:user.email||'',usedAt:Date.now()});
+    await b.commit(); sessionStorage.removeItem('carflip-invite'); pendingInvite=null; toast('انضممت إلى الفريق بنجاح');
+  }catch(e){ console.warn(e); toast('تعذّر استخدام رابط الدعوة: '+(e.code||'')); }
+}
+function renderNoAccess(){
+  view={name:'none',id:null};
+  app.innerHTML=`<div class="auth-wrap"><div class="panel w-full max-w-md p-6 text-center">
+    <h1 class="display font-extrabold text-xl mb-2">${role==='suspended'?'حسابك موقوف':'حسابك غير مرتبط بفريق'}</h1>
+    <p class="hint mb-5">${role==='suspended'?'أوقف المدير صلاحية دخولك. تواصل معه لإعادة تفعيلها.':'لاستخدام كار فليب تحتاج رابط دعوة خاصاً من المدير. افتح الرابط الذي أرسله لك، ثم سجّل الدخول بهذا الحساب.'}</p>
+    <p class="hint mb-5" dir="ltr">${esc(user.email||'')}</p>
+    <button class="btn btn-ink" id="naOut">تسجيل الخروج</button></div></div>`;
+  $('#naOut').onclick=()=>FB.A.signOut(FB.auth);
+}
+function subscribe(){
+  let first=true;
+  const timer=setTimeout(()=>{ if(first){ first=false; toast('الاتصال بطيء؛ تُعرض آخر نسخة محفوظة على الجهاز.'); route(); } },10000);
+  unsubs.push(FB.F.onSnapshot(dref('settings','company'),s=>{ if(s.exists()){ settings={...DEFAULT_SETTINGS,...s.data(),theme:settings.theme}; if(!first && view.name==='garage') renderGarage(); } },()=>{}));
+  if(isAdmin()){
+    unsubs.push(FB.F.onSnapshot(FB.F.collection(FB.db,'members'),s=>{ members=new Map(s.docs.map(d=>[d.id,d.data()])); if(!first&&(view.name==='team'||view.name==='garage')) route(); },()=>{}));
+    unsubs.push(FB.F.onSnapshot(FB.F.collection(FB.db,'invites'),s=>{ invites=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>n(b.createdAt)-n(a.createdAt)); if(!first&&view.name==='team') renderTeam(); },()=>{}));
+  } else {
+    unsubs.push(FB.F.onSnapshot(dref('members',user.uid),s=>{ if(!s.exists()||!s.data().active){ role=s.exists()?'suspended':'none'; unsubs.forEach(f=>f()); unsubs=[]; renderNoAccess(); return; } me=s.data(); if(!first) route(); },()=>{}));
+  }
+  const q=isAdmin()?carsCol():FB.F.query(carsCol(),FB.F.where('ownerUid','==',user.uid));
+  unsubs.push(FB.F.onSnapshot(q,snap=>{
+    let curChanged=false;
+    snap.docChanges().forEach(ch=>{
+      const id=ch.doc.id;
+      if(ch.type==='removed'){ if(!pending[id]){ cars.delete(id); if(view.id===id) curChanged=true; } return; }
+      const data=ch.doc.data(); const local=cars.get(id);
+      if(local && (pending[id]||inflight[id]||n(local.updatedAt)>=n(data.updatedAt))) return;
+      cars.set(id,data); if(view.id===id) curChanged=true;
+    });
+    if(!snap.metadata.fromCache) clearTimeout(timer);
+    if(first){ first=false; route(); if(isAdmin()) checkLegacy(); return; }
+    if(view.name==='garage') renderGarage(); else if(curChanged && !app.contains(document.activeElement)) route();
+  },err=>{ clearTimeout(timer); app.innerHTML=`<div class="panel p-6"><p class="err">تعذّر تحميل البيانات: ${esc(err.code||err.message)}</p><p class="hint mt-3">تأكد أن قواعد Firestore المنشورة هي الموجودة في ملف firestore.rules.</p></div>`; }));
+}
+function endSession(){
+  unsubs.forEach(f=>f&&f()); unsubs=[]; if(unsubPhotos){unsubPhotos(); unsubPhotos=null;}
+  user=null; role='none'; me=null; cars.clear(); members.clear(); invites=[];
+  $('#userBox').classList.add('hidden'); $('#userBox').classList.remove('flex');
+  renderAuth();
+}
+
+/* نقل سيارات النسخة السابقة (الحساب الشخصي) إلى مرآب الشركة */
+async function checkLegacy(){
+  try{
+    const flag=await FB.F.getDoc(dref('users',user.uid,'meta','migrated')); if(flag.exists()) return;
+    const old=await FB.F.getDocs(FB.F.collection(FB.db,'users',user.uid,'cars')); if(old.empty) return;
+    const bar=document.createElement('div'); bar.className='panel p-4 mb-5 flex flex-wrap items-center justify-between gap-3';
+    bar.innerHTML=`<span>لديك <b class="num">${old.size}</b> سيارة من النسخة السابقة. انقليها إلى مرآب الشركة لتظهر هنا.</span><button class="btn btn-primary" id="migBtn">نقل السيارات</button>`;
+    app.prepend(bar);
+    $('#migBtn').onclick=async()=>{
+      $('#migBtn').disabled=true; $('#migBtn').textContent='جارٍ النقل…';
+      try{
+        for(const d of old.docs){
+          const c={...d.data(),ownerUid:user.uid,ownerName:'المدير'};
+          await FB.F.setDoc(dref('cars',d.id),c);
+          const ps=await FB.F.getDocs(FB.F.collection(FB.db,'users',user.uid,'cars',d.id,'photos'));
+          for(const p of ps.docs) await FB.F.setDoc(dref('cars',d.id,'photos',p.id),p.data());
+        }
+        await FB.F.setDoc(dref('users',user.uid,'meta','migrated'),{at:Date.now()});
+        bar.remove(); toast('نُقلت السيارات إلى مرآب الشركة');
+      }catch(e){ toast('تعذّر النقل: '+(e.code||'')); $('#migBtn').disabled=false; $('#migBtn').textContent='إعادة المحاولة'; }
+    };
+  }catch(e){}
+}
+
+/* ---------- الحفظ ---------- */
+function setSaveState(s){const el=$('#saveState'); if(el) el.textContent={saving:'جارٍ الحفظ…',saved:'محفوظ',error:'تعذّر الحفظ، ستُعاد المحاولة'}[s]||''; }
+function queueSave(car){ car.updatedAt=Date.now(); clearTimeout(pending[car.id]); setSaveState('saving'); pending[car.id]=setTimeout(()=>{delete pending[car.id]; flush(car.id)},700); }
+async function flush(id){
+  if(inflight[id]){inflight[id].again=true;return}
+  const car=cars.get(id); if(!car||!user) return;
+  inflight[id]={again:false};
+  try{ await FB.F.setDoc(dref('cars',id),clone(car)); setSaveState('saved'); }
+  catch(e){ setSaveState('error'); if(e.code!=='permission-denied'){ inflight[id].again=true; await new Promise(r=>setTimeout(r,2500)); } else toast('لا تملك صلاحية حفظ هذا التعديل'); }
+  const again=inflight[id]?.again; delete inflight[id]; if(again && cars.has(id)) flush(id);
+}
+async function flushNow(id){ if(pending[id]){ clearTimeout(pending[id]); delete pending[id]; } await flush(id); }
+async function saveSettings(){ try{ localStorage.setItem('carflip-theme',settings.theme||''); }catch(e){} if(!isAdmin()) return; const {theme,...rest}=settings; try{ await FB.F.setDoc(dref('settings','company'),rest); }catch(e){ toast('تعذّر حفظ الإعدادات'); } }
+async function removeCar(id){
+  cars.delete(id); clearTimeout(pending[id]);
+  try{
+    const ps=await FB.F.getDocs(photosCol(id)); const b=FB.F.writeBatch(FB.db);
+    ps.forEach(d=>b.delete(d.ref)); b.delete(dref('cars',id)); await b.commit();
+  }catch(e){ toast('تعذّر حذف السيارة: '+(e.code||'')); }
+}
+
+/* ---------- الفريق (للمدير) ---------- */
+const inviteLink=id=>location.origin+location.pathname+'?invite='+id;
+function permChecks(prefix,perms){ return PERMS.map(p=>`<label class="flex items-center gap-2 text-sm"><input type="checkbox" class="w-4 h-4" data-${prefix}="${p.k}" ${perms?.[p.k]?'checked':''}> ${p.l}</label>`).join(''); }
+function renderTeam(){
+  if(!isAdmin()){ location.hash='garage'; return; }
+  view={name:'team',id:null};
+  const mem=[...members.entries()].sort((a,b)=>n(b[1].joinedAt)-n(a[1].joinedAt));
+  const open=invites.filter(i=>!i.usedBy);
+  const count=uid=>[...cars.values()].filter(c=>c.ownerUid===uid).length;
+  app.innerHTML=`
+  <div class="flex flex-wrap items-center justify-between gap-3 mb-5">
+    <div><h1 class="display font-extrabold text-2xl sm:text-3xl">الفريق</h1><p class="hint mt-1">أنشئ رابط دعوة لكل موظف. يرى الموظف السيارات التي أضافها فقط، وترى أنت سيارات الجميع.</p></div>
+    <a href="#garage" class="btn btn-ghost">→ المرآب</a>
+  </div>
+  <section class="panel p-5 mb-5">
+    <h2 class="sec-title mb-3">دعوة موظف جديد</h2>
+    <div class="grid sm:grid-cols-[1fr_auto] gap-4 items-end">
+      <label class="fld">اسم الموظف<input id="invName" class="inp" placeholder="مثال: أحمد — قسم المشتريات"></label>
+      <button id="invCreate" class="btn btn-primary">إنشاء رابط الدعوة</button>
+    </div>
+    <div class="flex flex-wrap gap-x-6 gap-y-2 mt-4"><span class="hint">الصلاحيات:</span>${permChecks('np',{create:true,edit:true,delete:false})}</div>
+    <p class="hint mt-3">من يملك «إضافة» دون «تعديل» يستطيع تعديل سيارته ما دامت في حالة «مسودة» فقط. المشاهدة متاحة دائماً لسياراته.</p>
+  </section>
+  ${open.length?`<section class="panel p-5 mb-5"><h2 class="sec-title mb-3">روابط لم تُستخدم بعد</h2><div class="grid gap-3">${open.map(i=>`
+    <div class="flex flex-wrap items-center justify-between gap-3 p-3 rounded-lg" style="background:var(--surface-2)">
+      <div><b>${esc(i.name)}</b> ${i.active?'':'<span class="pill ms-2">موقوف</span>'}<div class="hint text-xs">${PERMS.filter(p=>i.perms?.[p.k]).map(p=>p.l).join('، ')||'مشاهدة فقط'}</div></div>
+      <div class="flex flex-wrap gap-2">
+        ${i.active?`<button class="btn btn-ink !min-h-[36px]" data-copy="${i.id}">نسخ الرابط</button>
+        <a class="btn btn-ghost !min-h-[36px]" target="_blank" rel="noopener" href="https://wa.me/?text=${encodeURIComponent('رابط دخولك إلى كار فليب: '+inviteLink(i.id))}">واتساب</a>
+        <button class="btn btn-danger !min-h-[36px]" data-stop="${i.id}">إيقاف الرابط</button>`:`<button class="btn btn-ghost !min-h-[36px]" data-delinv="${i.id}">حذف</button>`}
+      </div></div>`).join('')}</div><p class="hint mt-3">كل رابط يعمل مرة واحدة فقط: لأول حساب يسجّل به.</p></section>`:''}
+  <section class="panel p-5">
+    <h2 class="sec-title mb-3">الموظفون (${mem.length})</h2>
+    ${mem.length?`<div class="grid gap-3">${mem.map(([id,m])=>`
+      <div class="p-3 rounded-lg grid gap-3" style="background:var(--surface-2)">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <div><b>${esc(m.name)}</b> <span class="pill ms-2 ${m.active?'st-ready':'st-draft'}"><span class="dot"></span>${m.active?'نشط':'موقوف'}</span>
+            <div class="hint text-xs" dir="ltr">${esc(m.email)}</div><div class="hint text-xs">${count(id)} سيارة</div></div>
+          <div class="flex flex-wrap gap-2">
+            <button class="btn btn-ghost !min-h-[36px]" data-view="${id}">سياراته</button>
+            <button class="btn ${m.active?'btn-danger':'btn-ink'} !min-h-[36px]" data-toggle="${id}">${m.active?'إيقاف الحساب':'إعادة التفعيل'}</button>
+          </div>
+        </div>
+        <div class="flex flex-wrap gap-x-6 gap-y-2" data-permrow="${id}">${permChecks('mp',m.perms)}</div>
+      </div>`).join('')}</div>`:'<p class="hint">لم ينضم أي موظف بعد. أنشئ رابط دعوة وأرسله له.</p>'}
+  </section>`;
+  $('#invCreate').onclick=async()=>{
+    const name=$('#invName').value.trim(); if(!name){ toast('اكتب اسم الموظف أولاً'); $('#invName').focus(); return; }
+    const perms=Object.fromEntries(PERMS.map(p=>[p.k,app.querySelector(`[data-np="${p.k}"]`).checked]));
+    const id=Array.from(crypto.getRandomValues(new Uint8Array(12)),b=>b.toString(16).padStart(2,'0')).join('');
+    try{ await FB.F.setDoc(dref('invites',id),{name,perms,active:true,usedBy:null,createdAt:Date.now()}); await copyText(inviteLink(id)); toast('أُنشئ الرابط ونُسخ. أرسله إلى '+name); }
+    catch(e){ toast('تعذّر إنشاء الرابط: '+(e.code||'')); }
+  };
+  app.querySelectorAll('[data-copy]').forEach(b=>b.onclick=async()=>{ await copyText(inviteLink(b.dataset.copy)); toast('نُسخ الرابط'); });
+  app.querySelectorAll('[data-stop]').forEach(b=>b.onclick=()=>FB.F.updateDoc(dref('invites',b.dataset.stop),{active:false}).catch(()=>toast('تعذّر الإيقاف')));
+  app.querySelectorAll('[data-delinv]').forEach(b=>b.onclick=()=>FB.F.deleteDoc(dref('invites',b.dataset.delinv)).catch(()=>toast('تعذّر الحذف')));
+  app.querySelectorAll('[data-toggle]').forEach(b=>b.onclick=()=>{ const m=members.get(b.dataset.toggle); FB.F.updateDoc(dref('members',b.dataset.toggle),{active:!m.active}).catch(()=>toast('تعذّر التعديل')); });
+  app.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>{ ownerFilter=b.dataset.view; location.hash='garage'; });
+  app.querySelectorAll('[data-permrow]').forEach(row=>row.querySelectorAll('[data-mp]').forEach(cb=>cb.onchange=()=>{
+    FB.F.updateDoc(dref('members',row.dataset.permrow),{['perms.'+cb.dataset.mp]:cb.checked}).then(()=>toast('حُدّثت الصلاحيات')).catch(()=>toast('تعذّر تحديث الصلاحيات'));
+  }));
+}
+async function copyText(t){ try{ await navigator.clipboard.writeText(t); }catch(e){ const a=document.createElement('textarea'); a.value=t; document.body.appendChild(a); a.select(); try{document.execCommand('copy')}catch(_){} a.remove(); } }
+
+/* ---------- تسجيل الدخول ---------- */
+const AUTH_ERR={
+  'auth/invalid-credential':'البريد أو كلمة المرور غير صحيحة.',
+  'auth/wrong-password':'كلمة المرور غير صحيحة.',
+  'auth/user-not-found':'لا يوجد حساب بهذا البريد. أنشئي حساباً جديداً.',
+  'auth/email-already-in-use':'هذا البريد مسجّل مسبقاً. سجّلي الدخول بدلاً من ذلك.',
+  'auth/weak-password':'كلمة المرور قصيرة؛ استخدمي 6 أحرف على الأقل.',
+  'auth/invalid-email':'صيغة البريد الإلكتروني غير صحيحة.',
+  'auth/missing-password':'اكتبي كلمة المرور.',
+  'auth/too-many-requests':'محاولات كثيرة. انتظري قليلاً ثم حاولي مجدداً.',
+  'auth/popup-closed-by-user':'أُغلقت نافذة Google قبل إكمال الدخول.',
+  'auth/popup-blocked':'المتصفح منع نافذة Google. اسمحي بالنوافذ المنبثقة لهذا الموقع.',
+  'auth/unauthorized-domain':'هذا النطاق غير مُضاف في Firebase ← Authentication ← Settings ← Authorized domains.',
+  'auth/operation-not-allowed':'طريقة الدخول هذه غير مفعّلة في Firebase ← Authentication.',
+  'auth/network-request-failed':'تعذّر الاتصال بالإنترنت.'
+};
+const authMsg=e=>AUTH_ERR[e?.code]||('حدث خطأ: '+(e?.code||e?.message||''));
+function renderAuth(mode='login'){
+  view={name:'auth',id:null};
+  app.innerHTML=`
+  <div class="auth-wrap">
+    <div class="panel w-full max-w-sm p-6">
+      <h1 class="display font-extrabold text-2xl mb-1">${mode==='login'?'أهلاً بعودتك':'حساب جديد'}</h1>
+      <p class="hint mb-5">${pendingInvite?'لديك رابط دعوة. سجّل الدخول أو أنشئ حساباً لتنضم إلى الفريق.':'سياراتك وحساباتك محفوظة في حسابك، وتظهر لك من أي جهاز.'}</p>
+      <div class="tabs mb-5" role="tablist">
+        <button role="tab" data-mode="login" aria-selected="${mode==='login'}">تسجيل الدخول</button>
+        <button role="tab" data-mode="signup" aria-selected="${mode==='signup'}">إنشاء حساب</button>
+      </div>
+      <button id="gBtn" class="btn gbtn mb-4">
+        <svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="m6.3 14.7 6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-7.9l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>
+        المتابعة بحساب Google
+      </button>
+      <div class="or mb-4">أو بالبريد الإلكتروني</div>
+      <form id="authForm" class="grid gap-3" novalidate>
+        <label class="fld">البريد الإلكتروني<input id="aEmail" class="inp" type="email" autocomplete="email" dir="ltr" required></label>
+        <label class="fld">كلمة المرور<input id="aPass" class="inp" type="password" autocomplete="${mode==='login'?'current-password':'new-password'}" dir="ltr" required minlength="6"></label>
+        <div id="aMsg" aria-live="polite"></div>
+        <button class="btn btn-primary w-full" type="submit">${mode==='login'?'تسجيل الدخول':'إنشاء الحساب'}</button>
+        ${mode==='login'?'<button type="button" id="resetBtn" class="hint underline justify-self-center">نسيت كلمة المرور؟</button>':''}
+      </form>
+    </div>
+  </div>`;
+  const msg=(t,ok)=>{$('#aMsg').innerHTML=t?`<div class="${ok?'ok':'err'}">${esc(t)}</div>`:''};
+  app.querySelectorAll('[data-mode]').forEach(b=>b.onclick=()=>renderAuth(b.dataset.mode));
+  $('#gBtn').onclick=async()=>{ msg(''); try{ await FB.A.signInWithPopup(FB.auth,new FB.A.GoogleAuthProvider()); }catch(e){ msg(authMsg(e)); } };
+  $('#authForm').onsubmit=async e=>{
+    e.preventDefault(); msg(''); const em=$('#aEmail').value.trim(), pw=$('#aPass').value;
+    const btn=e.target.querySelector('[type=submit]'); btn.disabled=true;
+    try{ if(mode==='login') await FB.A.signInWithEmailAndPassword(FB.auth,em,pw); else await FB.A.createUserWithEmailAndPassword(FB.auth,em,pw); }
+    catch(err){ msg(authMsg(err)); btn.disabled=false; }
+  };
+  $('#resetBtn')?.addEventListener('click',async()=>{
+    const em=$('#aEmail').value.trim(); if(!em){ msg('اكتبي بريدك الإلكتروني أولاً ثم اضغطي «نسيت كلمة المرور».'); return; }
+    try{ await FB.A.sendPasswordResetEmail(FB.auth,em); msg('أرسلنا رابط تعيين كلمة المرور إلى بريدك. تفقّدي أيضاً مجلد الرسائل غير المرغوبة.',true); }catch(e){ msg(authMsg(e)); }
+  });
+}
+
+/* ---------- شاشة الإعداد (تظهر قبل لصق بيانات Firebase) ---------- */
+function renderSetup(){
+  app.innerHTML=`
+  <section class="panel p-6 max-w-3xl mx-auto setup">
+    <h1 class="display font-extrabold text-2xl mb-2">إعداد كار فليب لأول مرة</h1>
+    <p class="hint mb-6">هذه الشاشة تظهر لكِ وحدك حتى تربطي الموقع بمشروع Firebase. بعد الربط يرى الزوار صفحة تسجيل الدخول مباشرة.</p>
+    <ol>
+      <li><div><b>أنشئي مشروعاً:</b> ادخلي <code>console.firebase.google.com</code> بحساب Google، ثم «إنشاء مشروع» وسمّيه <code>carflip</code>. يمكنك إيقاف Google Analytics.</div></li>
+      <li><div><b>أضيفي تطبيق ويب:</b> في صفحة المشروع اضغطي أيقونة <code>&lt;/&gt;</code>، اكتبي اسماً، ثم «تسجيل التطبيق». ستظهر لكِ كتلة <code>firebaseConfig</code>؛ انسخيها.</div></li>
+      <li><div><b>الصقي البيانات:</b> افتحي ملف <code>index.html</code> وابحثي عن <code>PASTE_API_KEY</code> في أعلى الكود، واستبدلي الكتلة كلها بما نسختِه.</div></li>
+      <li><div><b>فعّلي تسجيل الدخول:</b> من القائمة Build ← Authentication ← Get started، ثم من تبويب Sign-in method فعّلي <code>Email/Password</code> و<code>Google</code>.</div></li>
+      <li><div><b>أنشئي قاعدة البيانات:</b> Build ← Firestore Database ← Create database، اختاري موقعاً قريباً، وابدئي بوضع Production. ثم من تبويب Rules الصقي محتوى ملف <code>firestore.rules</code> واضغطي Publish. هذه القواعد هي ما يمنع أي مستخدم من رؤية بيانات غيره.</div></li>
+      <li><div><b>فعّلي Gemini:</b> Build ← AI Logic ← Get started، واختاري <code>Gemini Developer API</code>. يُنشأ المفتاح تلقائياً ولا يظهر في الكود.</div></li>
+      <li><div><b>انشري الموقع:</b> ارفعي الملفين إلى مستودع GitHub وفعّلي GitHub Pages. ثم في Authentication ← Settings ← Authorized domains أضيفي نطاقك، مثل <code>username.github.io</code>.</div></li>
+    </ol>
+  </section>`;
+}
+
+/* ---------- التنقّل ---------- */
+function route(){
+  if(!user) return;
+  if(unsubPhotos){ unsubPhotos(); unsubPhotos=null; photos=[]; }
+  const h=(location.hash||'').slice(1);
+  if(role!=='admin'&&role!=='member') return;
+  if(h==='team' && isAdmin()){ renderTeam(); }
+  else if(h.startsWith('car-') && cars.has(h.slice(4))){ view={name:'car',id:h.slice(4)}; renderEditor(); }
+  else { view={name:'garage',id:null}; renderGarage(); }
+  window.scrollTo(0,0);
+}
+window.addEventListener('hashchange',route);
+
+/* ---------- المرآب ---------- */
+function carTitle(c){ const t=[c.make,c.model,c.year].filter(Boolean).join(' '); return t||'سيارة بدون اسم'; }
+function renderGarage(){
+  const list=[...cars.values()].filter(c=>ownerFilter==='all'||c.ownerUid===ownerFilter).sort((a,b)=>n(b.updatedAt)-n(a.updatedAt));
+  let invested=0, realized=0, soldCount=0, expected=0;
+  list.forEach(c=>{const r=calc(c); if(c.status==='sold'){ if(r.aProfit!=null){realized+=r.aProfit; soldCount++;} } else { invested+=r.total; if(r.mProfit!=null) expected+=r.mProfit; }});
+  const counts=Object.fromEntries(STATUSES.map(s=>[s.k,list.filter(c=>c.status===s.k).length]));
+  const shown=filter==='all'?list:list.filter(c=>c.status===filter);
+  app.innerHTML=`
+  <section class="mb-6 flex flex-wrap items-end justify-between gap-4">
+    <div>
+      <h1 class="display font-extrabold text-2xl sm:text-3xl">مرآب السيارات</h1>
+      <p class="hint mt-1">كل سيارة من المزاد إلى البيع: التكلفة الكاملة، الربح المتوقع، وأقصى سعر يستحق المزايدة.</p>
+    </div>
+    <div class="flex flex-wrap gap-2 items-center">
+      ${isAdmin()&&members.size?`<select id="ownerSel" class="inp !w-auto" aria-label="عرض سيارات"><option value="all">كل الفريق</option><option value="${user.uid}" ${ownerFilter===user.uid?'selected':''}>سياراتي</option>${[...members.entries()].map(([id,m])=>`<option value="${id}" ${ownerFilter===id?'selected':''}>${esc(m.name)}</option>`).join('')}</select>`:''}
+      ${can('create')?'<button id="addCar" class="btn btn-primary text-base">+ إضافة سيارة</button>':''}
+    </div>
+  </section>
+  <section class="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
+    ${stat('السيارات',`<span class="num">${list.length}</span>`)}
+    ${stat('رأس المال في السيارات غير المباعة',money(invested))}
+    ${stat('الربح المتوقع على سعر السوق',`<span class="${expected<0?'loss':'gain'}">${money(expected)}</span>`)}
+    ${stat('الأرباح المحققة',`<span class="${realized<0?'loss':'gain'}">${money(realized)}</span>`,soldCount?`من ${soldCount} سيارة مباعة`:'')}
+  </section>
+  <nav class="flex gap-2 overflow-x-auto pb-2 mb-4" aria-label="تصفية حسب الحالة">
+    <button class="chip" data-filter="all" aria-pressed="${filter==='all'}">الكل (${list.length})</button>
+    ${STATUSES.map(s=>`<button class="chip" data-filter="${s.k}" aria-pressed="${filter===s.k}">${s.l} (${counts[s.k]})</button>`).join('')}
+  </nav>
+  ${shown.length?`<section class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">${shown.map(card).join('')}</section>`:
+   `<section class="panel p-8 text-center">
+      <p class="display font-bold text-lg mb-2">${list.length?'لا توجد سيارات بهذه الحالة':'ابدأ بأول سيارة'}</p>
+      <p class="hint mb-4">${list.length?'اختر حالة أخرى أو أضف سيارة جديدة.':'أدخل سعر المزاد والشحن والقطع، وسيحسب كار فليب التكلفة الكاملة وهامش الربح فوراً.'}</p>
+      ${can('create')?'<button class="btn btn-primary" data-add>+ إضافة سيارة</button>':'<p class="hint">لا تملك صلاحية إضافة سيارات.</p>'}
+    </section>`}
+  `;
+  const add=()=>{const c=newCar(); cars.set(c.id,c); queueSave(c); location.hash='car-'+c.id;};
+  $('#addCar')&&($('#addCar').onclick=add); $('#ownerSel')&&($('#ownerSel').onchange=e=>{ownerFilter=e.target.value; renderGarage();}); app.querySelectorAll('[data-add]').forEach(b=>b.onclick=add);
+  app.querySelectorAll('[data-filter]').forEach(b=>b.onclick=()=>{filter=b.dataset.filter; renderGarage();});
+}
+function stat(label,val,sub=''){return `<div class="panel p-4"><div class="hint mb-1">${label}</div><div class="display font-bold text-lg sm:text-xl">${val}</div>${sub?`<div class="hint mt-1">${sub}</div>`:''}</div>`}
+function card(c){
+  const r=calc(c);
+  let profitLine;
+  if(c.status==='sold' && r.aProfit!=null) profitLine=`<span class="hint">الربح المحقق</span><b class="${r.aProfit<0?'loss':'gain'}">${money(r.aProfit)}</b>`;
+  else if(r.mProfit!=null) profitLine=`<span class="hint">الربح المتوقع</span><b class="${r.mProfit<0?'loss':'gain'}">${money(r.mProfit)}</b>`;
+  else profitLine=`<span class="hint">الربح المتوقع</span><span class="hint">أدخل سعر السوق</span>`;
+  return `<a class="lot" href="#car-${c.id}">
+    <div class="lot-strip"><span>لوت ${esc(c.lot)||'—'} · ${esc(c.auction||'')}</span><span class="hole" aria-hidden="true"></span></div>
+    <div class="lot-photo">${c.thumb?`<img src="${esc(c.thumb)}" alt="" loading="lazy">`:`<span class="text-sm">بدون صور</span>`}</div>
+    <div class="p-4 flex flex-col gap-2">
+      <div class="flex items-start justify-between gap-2">
+        <h3 class="display font-bold text-base leading-snug">${esc(carTitle(c))}</h3>
+        <span class="pill st-${c.status}"><span class="dot"></span>${ST[c.status]||''}</span>
+      </div>
+      ${isAdmin()?`<p class="hint text-xs">أضافها: ${esc(ownerLabel(c))}</p>`:''}
+      ${c.damage?`<p class="hint line-clamp-1">${esc(c.damage)}</p>`:''}
+      <div class="flex justify-between text-sm pt-2 border-t" style="border-color:var(--line)"><span class="hint">التكلفة الإجمالية</span><b>${money(r.total)}</b></div>
+      <div class="flex justify-between text-sm">${profitLine}</div>
+    </div>
+  </a>`;
+}
+
+/* ---------- صفحة السيارة ---------- */
+function F(label,path,val,opts={}){
+  const type=opts.type||'number'; const unit=opts.unit;
+  const input=`<input class="inp" data-f="${path}" type="${type}" ${type==='number'?'inputmode="decimal" step="any" min="0"':''} value="${esc(val===0&&type==='number'?'':val)}" placeholder="${esc(opts.ph??(type==='number'?'0':''))}">`;
+  return `<label class="fld ${opts.cls||''}">${label}${unit?`<span class="unit-wrap">${input}<span class="unit">${unit}</span></span>`:input}</label>`;
+}
+function renderEditor(){
+  const c=cars.get(view.id); const L=cur().l;
+  const si=STATUSES.findIndex(s=>s.k===c.status);
+  app.innerHTML=`
+  <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+    <a href="#garage" class="btn btn-ghost">→ المرآب</a>
+    ${canDeleteCar(c)?'<button id="delBtn" class="btn btn-danger">حذف السيارة</button>':''}
+  </div>
+  <div class="mb-5">
+    <h1 id="carHead" class="display font-extrabold text-2xl sm:text-3xl mb-1">${esc(carTitle(c))}</h1>
+    ${isAdmin()&&c.ownerUid!==user.uid?`<p class="hint mb-3">أضافها: ${esc(ownerLabel(c))}</p>`:'<div class="mb-3"></div>'}
+    ${canEditCar(c)?'':'<p class="verdict mid mb-3">عرض فقط — لا تملك صلاحية تعديل هذه السيارة.</p>'}
+    <div class="steps" role="group" aria-label="حالة السيارة">
+      ${STATUSES.map((s,i)=>`<button class="step ${i<si?'done':''} ${i===si?'cur':''}" data-status="${s.k}" aria-pressed="${i===si}">${s.l}</button>`).join('')}
+    </div>
+  </div>
+  <div class="grid lg:grid-cols-[1fr_400px] gap-5 items-start">
+    <div class="grid gap-5">
+      <section class="panel p-5">
+        <h2 class="sec-title mb-4">بيانات السيارة</h2>
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+          ${F('الماركة','make',c.make,{type:'text',ph:'تويوتا'})}
+          ${F('الموديل','model',c.model,{type:'text',ph:'كامري SE'})}
+          ${F('سنة الصنع','year',c.year,{type:'text',ph:'2021'})}
+          <label class="fld">المزاد<select class="inp" data-f="auction">${['Copart','IAAI','Manheim','مزاد محلي','أخرى'].map(a=>`<option ${c.auction===a?'selected':''}>${a}</option>`).join('')}</select></label>
+          ${F('رقم اللوت','lot',c.lot,{type:'text',ph:'45821937'})}
+          <label class="fld">نوع الملكية<select class="inp" data-f="titleType">${['Salvage','Clean','Rebuilt','Certificate of Destruction','Parts Only'].map(a=>`<option ${c.titleType===a?'selected':''}>${a}</option>`).join('')}</select></label>
+          ${F('رقم الهيكل VIN','vin',c.vin,{type:'text',cls:'col-span-2',ph:'4T1G11AK5MU…'})}
+          ${F('المسافة المقطوعة','mileage',c.mileage,{type:'text',ph:'48,200 ميل'})}
+        </div>
+        <label class="fld mt-3">وصف الضرر<textarea class="inp" data-f="damage" placeholder="ضرر أمامي، الوسائد الهوائية منفجرة، الرديتر مكسور…">${esc(c.damage)}</textarea></label>
+      </section>
+
+      <section class="panel p-5">
+        <div class="flex flex-wrap items-baseline justify-between gap-2 mb-4">
+          <h2 class="sec-title">الشراء والشحن بالدولار</h2>
+          <span class="hint">تُحوَّل إلى ${esc(cur().n)} بسعر الصرف</span>
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+          ${F('سعر الشراء في المزاد','buy.price',c.buy.price,{unit:'$'})}
+          ${F('رسوم المزاد','buy.auctionFee',c.buy.auctionFee,{unit:'$'})}
+          ${F('الشحن الداخلي (أمريكا)','buy.usInland',c.buy.usInland,{unit:'$'})}
+          ${F('الشحن البحري','buy.sea',c.buy.sea,{unit:'$'})}
+          ${F('التأمين','buy.insurance',c.buy.insurance,{unit:'$'})}
+          ${F('سعر صرف الدولار','rate',c.rate,{unit:L})}
+        </div>
+        <p class="hint mt-3" id="usdLine"></p>
+      </section>
+
+      <section class="panel p-5">
+        <h2 class="sec-title mb-4">الجمارك والوصول</h2>
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+          ${F('الرسوم الجمركية','local.customsPct',c.local.customsPct,{unit:'%'})}
+          ${F('ضريبة القيمة المضافة','local.vatPct',c.local.vatPct,{unit:'%'})}
+          ${F('التخليص الجمركي','local.clearance',c.local.clearance,{unit:L})}
+          ${F('النقل من الميناء','local.portTransport',c.local.portTransport,{unit:L})}
+          ${F('الفحص والتسجيل','local.registration',c.local.registration,{unit:L})}
+        </div>
+        <p class="hint mt-3">الجمارك تُحسب على قيمة السيارة مع الشحن والتأمين (CIF)، والضريبة على القيمة بعد الجمارك. عدّل النسب حسب بلدك ونوع السيارة.</p>
+      </section>
+
+      <section class="panel p-5">
+        <div class="flex items-center justify-between mb-4"><h2 class="sec-title">قطع الغيار</h2><b id="partsSum" class="text-sm"></b></div>
+        <div id="partsList" class="grid gap-2"></div>
+        <button class="btn btn-ghost mt-3" data-addrow="parts">+ إضافة قطعة</button>
+      </section>
+
+      <section class="panel p-5">
+        <div class="flex items-center justify-between mb-4"><h2 class="sec-title">الورشة والتجهيز</h2><b id="laborSum" class="text-sm"></b></div>
+        <div id="laborList" class="grid gap-2"></div>
+        <button class="btn btn-ghost mt-3" data-addrow="labor">+ إضافة بند</button>
+        <div class="grid grid-cols-2 gap-3 mt-4 pt-4 border-t" style="border-color:var(--line)">
+          ${F('التنظيف والتلميع','cleaning',c.cleaning,{unit:L})}
+        </div>
+      </section>
+
+      <section class="panel p-5">
+        <h2 class="sec-title mb-1">البيع</h2>
+        <p class="hint mb-4">سعر السوق المتوقع: متوسط أسعار سيارات مماثلة سليمة في الإعلانات المحلية.</p>
+        <div class="grid grid-cols-2 gap-3">
+          ${F('سعر السوق المتوقع بعد الإصلاح','marketPrice',c.marketPrice,{unit:L})}
+          ${F('سعر البيع الفعلي','salePrice',c.salePrice,{unit:L,ph:'عند البيع'})}
+        </div>
+        <label class="fld mt-3">ملاحظات<textarea class="inp" data-f="notes" placeholder="المشتري، تاريخ الوصول، اسم الورشة…">${esc(c.notes)}</textarea></label>
+      </section>
+
+      <section class="panel p-5">
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+          <h2 class="sec-title">الصور والتوثيق</h2>
+          <label class="btn btn-ghost cursor-pointer">+ إرفاق صور<input id="photoIn" type="file" accept="image/*" multiple class="sr-only"></label>
+        </div>
+        <div id="thumbs" class="thumbs"></div>
+        <p id="photoHint" class="hint mt-2"></p>
+      </section>
+    </div>
+    <aside class="grid gap-5 lg:sticky lg:top-24" id="results"></aside>
+  </div>
+  <div class="mobile-bar" id="mbar"></div>`;
+  renderRows('parts'); renderRows('labor'); renderPhotos(); renderResults();
+  unsubPhotos=FB.F.onSnapshot(FB.F.query(photosCol(c.id),FB.F.orderBy('at')),snap=>{ photos=snap.docs.map(d=>({id:d.id,...d.data()})); renderPhotos(); },()=>{});
+
+  app.querySelectorAll('[data-status]').forEach(b=>b.onclick=()=>{ c.status=b.dataset.status; queueSave(c); const si=STATUSES.findIndex(s=>s.k===c.status);
+    app.querySelectorAll('[data-status]').forEach((x,i)=>{x.className=`step ${i<si?'done':''} ${i===si?'cur':''}`; x.setAttribute('aria-pressed',i===si)}); renderResults(); });
+  app.querySelectorAll('[data-addrow]').forEach(b=>b.onclick=()=>{ const k=b.dataset.addrow; c[k].push(k==='parts'?{id:lid(),name:'',qty:1,price:0}:{id:lid(),name:'',cost:0}); renderRows(k); queueSave(c); renderResults();
+    const inputs=document.querySelectorAll(`#${k}List [data-k="name"]`); inputs[inputs.length-1]?.focus(); });
+  if(!canEditCar(c)){ app.querySelectorAll('.inp,[data-addrow],[data-rm],[data-status],#photoIn').forEach(el=>{el.disabled=true}); app.querySelectorAll('[data-rmp]').forEach(el=>el.remove()); const lb=$('#photoIn')?.closest('label'); if(lb) lb.classList.add('hidden'); }
+  const del=$('#delBtn'); let armT;
+  if(del) del.onclick=async()=>{ if(!del.classList.contains('armed')){ del.classList.add('armed'); del.textContent='اضغط مرة أخرى للتأكيد'; armT=setTimeout(()=>{del.classList.remove('armed'); del.textContent='حذف السيارة'},4000); return; }
+    clearTimeout(armT); const id=c.id; location.hash='garage'; await removeCar(id); toast('حُذفت السيارة'); if(view.name==='garage') renderGarage(); };
+  $('#photoIn').onchange=e=>addPhotos(c,[...e.target.files]).finally(()=>{e.target.value=''});
+}
+function onInput(e){
+  if(view.name!=='car') return;
+  const c=cars.get(view.id); if(!c||!canEditCar(c)) return;
+  const t=e.target;
+  if(t.dataset.f){
+    const path=t.dataset.f.split('.'); let o=c; for(let i=0;i<path.length-1;i++) o=o[path[i]];
+    const last=path[path.length-1]; o[last]=t.type==='number'?n(t.value):t.value;
+    if(['make','model','year'].includes(last)) $('#carHead').textContent=carTitle(c);
+  } else if(t.dataset.list){
+    const row=c[t.dataset.list].find(r=>r.id===t.dataset.id); if(!row) return;
+    row[t.dataset.k]=t.type==='number'?n(t.value):t.value;
+  } else if(t.dataset.r){
+    c[t.dataset.r]=n(t.value);
+  } else return;
+  if(e.type==='input'||t.tagName==='SELECT') { queueSave(c); renderResults(t); }
+}
+function renderRows(k){
+  const c=cars.get(view.id); const L=cur().l; const box=$('#'+k+'List');
+  if(!c[k].length){ box.innerHTML=`<p class="hint">لا توجد بنود بعد.</p>`; return; }
+  box.innerHTML=(k==='parts'?`<div class="line-row parts-row hint text-xs"><span>القطعة</span><span>الكمية</span><span>السعر للوحدة</span><span></span></div>`:'')+
+  c[k].map(r=>k==='parts'?`
+    <div class="line-row parts-row">
+      <input class="inp" aria-label="اسم القطعة" data-list="parts" data-id="${r.id}" data-k="name" value="${esc(r.name)}" placeholder="صدام أمامي">
+      <input class="inp num" aria-label="الكمية" type="number" min="1" step="1" inputmode="numeric" data-list="parts" data-id="${r.id}" data-k="qty" value="${esc(r.qty)}">
+      <span class="unit-wrap"><input class="inp" aria-label="السعر" type="number" min="0" step="any" inputmode="decimal" data-list="parts" data-id="${r.id}" data-k="price" value="${r.price||''}" placeholder="0"><span class="unit">${L}</span></span>
+      <button class="icon-btn" data-rm="parts" data-id="${r.id}" aria-label="حذف البند">✕</button>
+    </div>`:`
+    <div class="line-row labor-row">
+      <input class="inp" aria-label="البند" data-list="labor" data-id="${r.id}" data-k="name" value="${esc(r.name)}" placeholder="أجور سمكرة">
+      <span class="unit-wrap"><input class="inp" aria-label="التكلفة" type="number" min="0" step="any" inputmode="decimal" data-list="labor" data-id="${r.id}" data-k="cost" value="${r.cost||''}" placeholder="0"><span class="unit">${L}</span></span>
+      <button class="icon-btn" data-rm="labor" data-id="${r.id}" aria-label="حذف البند">✕</button>
+    </div>`).join('');
+  box.querySelectorAll('[data-rm]').forEach(b=>b.onclick=()=>{ c[k]=c[k].filter(r=>r.id!==b.dataset.id); renderRows(k); queueSave(c); renderResults(); });
+}
+
+function renderResults(focusEl){
+  const c=cars.get(view.id); if(!c) return; const r=calc(c);
+  const el=$('#results'); if(!el) return;
+  $('#usdLine').innerHTML=`إجمالي بالدولار ${usd(r.usdTotal)} ← ${money(r.cif)}`;
+  $('#partsSum').innerHTML=money(r.parts); $('#laborSum').innerHTML=money(r.labor+r.cleaning);
+  if(focusEl && el.contains(focusEl)){ updateResultNumbers(c,r); return; }
+  const segs=SEG.map(s=>({...s,v:r.seg[s.k]})).filter(s=>s.v>0);
+  let verdict='';
+  if(r.mProfit!=null){
+    const m=r.mRoi; const cls=m>=.2?'good':m>=.08?'mid':'bad';
+    const txt=m>=.2?'صفقة مجدية بهامش مريح':m>=.08?'هامش ضيّق — راجع التكاليف قبل الالتزام':(m>=0?'ربح لا يغطي المخاطرة':'الصفقة خاسرة بالأرقام الحالية');
+    verdict=`<div class="verdict ${cls}">${txt}</div>`;
+  }
+  el.innerHTML=`
+  <section class="panel p-5">
+    <div class="hint">التكلفة الإجمالية حتى البيع</div>
+    <div class="display font-extrabold text-3xl my-1" id="rTotal">${money(r.total)}</div>
+    <div class="bar my-4" role="img" aria-label="توزيع التكاليف">${segs.map(s=>`<span style="width:${r.total?s.v/r.total*100:0}%;background:${s.c}"></span>`).join('')}</div>
+    <div>${SEG.map(s=>`<div class="legend-row"><span class="sw" style="background:${s.c}"></span><span>${s.l}</span><b class="num">${fmt(r.seg[s.k])}</b><span class="hint num w-12 text-left">${r.total?(r.seg[s.k]/r.total*100).toFixed(0):0}%</span></div>`).join('')}</div>
+    <p class="hint mt-3">منها جمارك ${money(r.customs)} وضريبة ${money(r.vat)}</p>
+  </section>
+
+  <section class="panel p-5">
+    <h2 class="sec-title mb-3">${c.status==='sold'&&r.aProfit!=null?'نتيجة البيع':'عند سعر السوق المتوقع'}</h2>
+    ${c.status==='sold'&&r.aProfit!=null?`
+      <div class="grid grid-cols-2 gap-3">
+        <div><div class="hint">صافي الربح المحقق</div><div class="display font-bold text-xl ${r.aProfit<0?'loss':'gain'}">${money(r.aProfit)}</div></div>
+        <div><div class="hint">العائد على التكلفة</div><div class="display font-bold text-xl">${pct(r.aRoi)}</div></div>
+      </div>`:
+    r.mProfit!=null?`
+      ${verdict}
+      <div class="grid grid-cols-3 gap-3 mt-4">
+        <div><div class="hint">صافي الربح</div><div class="display font-bold text-lg ${r.mProfit<0?'loss':'gain'}">${money(r.mProfit)}</div></div>
+        <div><div class="hint">العائد على التكلفة</div><div class="display font-bold text-lg">${pct(r.mRoi)}</div></div>
+        <div><div class="hint">هامش من سعر البيع</div><div class="display font-bold text-lg">${pct(r.mMargin)}</div></div>
+      </div>`:
+    `<p class="hint">أدخل «سعر السوق المتوقع بعد الإصلاح» في قسم البيع لترى الربح والحكم على الصفقة.</p>`}
+  </section>
+
+  <section class="panel p-5">
+    <h2 class="sec-title mb-1">أسعار البيع المقترحة</h2>
+    <p class="hint mb-3">سعر البيع = التكلفة الإجمالية + نسبة الربح منها.</p>
+    <div class="overflow-x-auto"><table class="tbl">
+      <thead><tr><th>نسبة الربح</th><th>سعر البيع</th><th>صافي الربح</th></tr></thead>
+      <tbody id="mTable">${marginRows(c,r)}</tbody>
+    </table></div>
+    <label class="fld mt-3">نسبة مخصصة<span class="unit-wrap"><input class="inp" type="number" min="0" step="1" inputmode="decimal" data-r="customPct" value="${c.customPct}"><span class="unit">%</span></span></label>
+  </section>
+
+  <section class="panel p-5" style="border-color:var(--tag); border-width:2px">
+    <h2 class="sec-title mb-1">أقصى سعر مزايدة</h2>
+    <p class="hint mb-3">أعلى سعر شراء في المزاد يحقق لك نسبة الربح المستهدفة، مع بقاء باقي التكاليف كما أدخلتها.</p>
+    <label class="fld mb-3">نسبة الربح المستهدفة<span class="unit-wrap"><input class="inp" type="number" min="0" step="1" inputmode="decimal" data-r="targetPct" value="${c.targetPct}"><span class="unit">%</span></span></label>
+    <div id="maxBid">${maxBidHtml(c,r)}</div>
+  </section>
+
+  <section class="panel p-5">
+    <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+      <h2 class="sec-title">التقرير الذكي</h2>
+      <button id="aiBtn" class="btn btn-ink" ${aiRunning?'disabled':''}>${aiRunning?'جارٍ التحليل…':c.ai?'إعادة التحليل':'حلّل الصفقة بالذكاء الاصطناعي'}</button>
+    </div>
+    <div id="aiOut" class="ai-out text-[.93rem]">${c.ai?md(c.ai.text)+`<p class="hint mt-3">آخر تحليل: ${new Date(c.ai.at).toLocaleString('ar-OM')}</p>`:`<p class="hint">يقرأ Gemini أرقام هذه السيارة ووصف الضرر، ويقدّر سعرها في سوق ${esc(cur().m)} بعد الإصلاح، ويعطيك حكماً على الجدوى ونصائح لرفع الربح. التقديرات استرشادية؛ قارنها بالإعلانات المحلية.</p>`}</div>
+  </section>`;
+  $('#aiBtn').onclick=()=>runAI(c);
+  updateMobileBar(c,r);
+}
+function marginRows(c,r){
+  const ps=[...MARGINS]; const cp=n(c.customPct); if(cp>0 && !ps.includes(cp)) ps.push(cp);
+  return ps.map(p=>`<tr class="${p===cp?'hl':''}"><td class="num">${p}%</td><td>${money(r.total*(1+p/100))}</td><td class="gain">${money(r.total*p/100)}</td></tr>`).join('');
+}
+function maxBidHtml(c,r){
+  if(r.maxBid==null) return `<p class="hint">يحتاج «سعر السوق المتوقع» لحسابه.</p>`;
+  if(r.maxBid<=0) return `<div class="verdict bad">حتى بسعر شراء صفر لن تحقق ${n(c.targetPct)}% — التكاليف الأخرى مرتفعة على سعر السوق.</div>`;
+  const diff=r.maxBid-n(c.buy.price);
+  return `<div class="display font-extrabold text-3xl">${usd(r.maxBid)}</div>
+    <p class="mt-2 text-sm ${diff<0?'loss':'gain'}">${n(c.buy.price)>0?(diff>=0?`أعلى من سعر شرائك بـ ${usd(diff)} — لديك مساحة.`:`سعر شرائك يتجاوزه بـ ${usd(-diff)}.`):'أدخل سعر الشراء للمقارنة.'}</p>`;
+}
+function updateResultNumbers(c,r){ $('#rTotal').innerHTML=money(r.total); $('#mTable').innerHTML=marginRows(c,r); $('#maxBid').innerHTML=maxBidHtml(c,r); updateMobileBar(c,r); }
+function updateMobileBar(c,r){
+  const mb=$('#mbar'); if(!mb) return;
+  const p=c.status==='sold'&&r.aProfit!=null?r.aProfit:r.mProfit;
+  mb.innerHTML=`<div><div class="text-[11px] opacity-70">التكلفة الإجمالية</div><div class="display font-bold">${money(r.total)}</div></div>
+   <div class="text-left"><div class="text-[11px] opacity-70">${c.status==='sold'&&r.aProfit!=null?'الربح المحقق':'الربح المتوقع'}</div><div class="display font-bold" style="color:${p==null?'inherit':p<0?'#FB7185':'#34D399'}">${p==null?'—':money(p)}</div></div>
+   <button class="btn btn-primary !min-h-[38px] !px-3" id="toRes">النتائج</button>`;
+  $('#toRes').onclick=()=>$('#results').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+/* ---------- الصور (مضغوطة داخل Firestore — تعمل على الخطة المجانية) ---------- */
+function renderPhotos(){
+  const c=cars.get(view.id); const box=$('#thumbs'); if(!box||!c) return;
+  box.innerHTML=photos.map(p=>`<div class="thumb"><img src="${esc(p.data)}" alt="صورة السيارة" data-zoom="${p.id}"><button data-rmp="${p.id}" aria-label="إزالة الصورة">✕</button></div>`).join('');
+  $('#photoHint').textContent=photos.length?`${photos.length} من 12 صورة`:'أرفق صور المزاد، الضرر، وصور ما بعد الإصلاح لتوثيق كل مرحلة.';
+  if(!canEditCar(c)) box.querySelectorAll('[data-rmp]').forEach(b=>b.remove());
+  box.querySelectorAll('[data-rmp]').forEach(b=>b.onclick=async()=>{
+    try{ await FB.F.deleteDoc(FB.F.doc(photosCol(c.id),b.dataset.rmp));
+      const rest=photos.filter(p=>p.id!==b.dataset.rmp); c.photoCount=rest.length;
+      if(rest.length===0) c.thumb=''; else if(rest[0]) c.thumb=await makeThumb(rest[0].data);
+      queueSave(c);
+    }catch(e){ toast('تعذّر حذف الصورة'); } });
+  box.querySelectorAll('[data-zoom]').forEach(i=>i.onclick=()=>{ const p=photos.find(x=>x.id===i.dataset.zoom); if(!p) return; const lb=document.createElement('div'); lb.className='lightbox'; lb.innerHTML=`<img src="${esc(p.data)}" alt="">`; lb.onclick=()=>lb.remove(); document.body.appendChild(lb); });
+}
+function loadImg(src){ return new Promise((res,rej)=>{ const i=new Image(); i.onload=()=>res(i); i.onerror=rej; i.src=src; }); }
+async function shrinkToData(src,max,q){
+  const img=await loadImg(src); const s=Math.min(1,max/Math.max(img.width,img.height));
+  const cv=document.createElement('canvas'); cv.width=Math.round(img.width*s); cv.height=Math.round(img.height*s);
+  cv.getContext('2d').drawImage(img,0,0,cv.width,cv.height); return cv.toDataURL('image/jpeg',q);
+}
+const makeThumb=src=>shrinkToData(src,320,.55);
+async function addPhotos(c,files){
+  if(!files.length) return;
+  if(photos.length>=12){ toast('الحد 12 صورة لكل سيارة'); return; }
+  await flushNow(c.id);
+  toast('جارٍ رفع الصور…');
+  for(const f of files.slice(0,12-photos.length)){
+    const u=URL.createObjectURL(f);
+    try{
+      let data=await shrinkToData(u,1200,.7);
+      if(data.length>700000) data=await shrinkToData(u,900,.55);
+      const id=lid();
+      await FB.F.setDoc(FB.F.doc(photosCol(c.id),id),{data,at:Date.now()});
+      if(!c.thumb) c.thumb=await makeThumb(data);
+      c.photoCount=(c.photoCount||0)+1;
+    }catch(e){ toast('تعذّر رفع إحدى الصور'); }
+    finally{ URL.revokeObjectURL(u); }
+  }
+  queueSave(c);
+}
+
+/* ---------- التقرير الذكي (Gemini عبر Firebase AI Logic) ---------- */
+function md(t){
+  const lines=esc(t).split('\n'); let out='',inList=false;
+  const inl=s=>s.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>');
+  for(const raw of lines){ const l=raw.trim();
+    if(/^[-•*]\s+/.test(l)){ if(!inList){out+='<ul>';inList=true} out+=`<li>${inl(l.replace(/^[-•*]\s+/,''))}</li>`; continue; }
+    if(inList){out+='</ul>';inList=false}
+    if(/^#{1,4}\s+/.test(l)) out+=`<h3>${inl(l.replace(/^#{1,4}\s+/,''))}</h3>`;
+    else if(l) out+=`<p>${inl(l)}</p>`;
+  }
+  if(inList) out+='</ul>'; return out;
+}
+async function runAI(c){
+  const out=$('#aiOut'); if(aiRunning) return;
+  if(!FB.model){ out.innerHTML=`<p class="err">خدمة Gemini غير مفعّلة. فعّليها من Firebase ← AI Logic.</p>`; return; }
+  const r=calc(c), K=cur();
+  const partsTxt=(c.parts||[]).filter(p=>p.name||n(p.price)).map(p=>`${p.name||'قطعة'} × ${n(p.qty)||1} = ${fmt(n(p.qty||1)*n(p.price))}`).join('؛ ')||'لم تُدخل';
+  const laborTxt=(c.labor||[]).filter(p=>n(p.cost)).map(p=>`${p.name||'بند'}: ${fmt(n(p.cost))}`).join('؛ ')||'لم تُدخل';
+  const prompt=`أنت محلل مالي خبير في تجارة السيارات المستوردة من المزادات الأمريكية (Copart وIAAI) المصدومة، وإصلاحها وبيعها في ${K.m}. العملة المحلية: ${K.n} (${K.l}).
+اكتب تقريراً عربياً موجزاً ومهنياً لتاجر عن جدوى هذه الصفقة.
+
+بيانات السيارة:
+- السيارة: ${carTitle(c)} | المزاد: ${c.auction} | نوع الملكية: ${c.titleType} | المسافة: ${c.mileage||'غير محددة'}
+- وصف الضرر: ${c.damage||'غير موصوف'}
+- الحالة الحالية: ${ST[c.status]}
+
+الأرقام:
+- سعر الشراء: $${fmt(n(c.buy.price),0)}، مصاريف المزاد والشحن والتأمين: $${fmt(r.usdOther,0)}، الإجمالي بالدولار $${fmt(r.usdTotal,0)} بسعر صرف ${c.rate}
+- الجمارك (${c.local.customsPct}%): ${fmt(r.customs)}، الضريبة (${c.local.vatPct}%): ${fmt(r.vat)}، تخليص ونقل وتسجيل: ${fmt(r.fees)}
+- قطع الغيار (${fmt(r.parts)}): ${partsTxt}
+- الورشة (${fmt(r.labor)}): ${laborTxt}؛ التنظيف: ${fmt(r.cleaning)}
+- التكلفة الإجمالية: ${fmt(r.total)} ${K.l}
+- سعر السوق الذي يتوقعه التاجر: ${r.market?fmt(r.market)+' '+K.l:'لم يحدده'}${r.mProfit!=null?` (ربح متوقع ${fmt(r.mProfit)}، عائد ${(r.mRoi*100).toFixed(1)}%)`:''}
+${c.status==='sold'&&r.aProfit!=null?`- بيعت فعلاً بـ ${fmt(r.sale)} بربح ${fmt(r.aProfit)}`:''}
+
+التنسيق: عناوين تبدأ بـ "## " ونقاط تبدأ بـ "- " فقط، بلا جداول ولا رموز تعبيرية. الأقسام بالترتيب:
+## الحكم على الصفقة
+(سطر يبدأ بإحدى: مجدية / مجدية بشروط / غير مجدية، ثم السبب في جملتين)
+## تقدير سعر السوق بعد الإصلاح
+(نطاق تقريبي بالعملة المحلية لسيارة مماثلة مُصلحة في ${K.m}، مع أثر نوع الملكية والحادث على السعر. صرّح أنه تقدير يجب التحقق منه من الإعلانات المحلية)
+## قراءة الأرقام
+## مخاطر الضرر والتكاليف الخفية
+## كيف ترفع الربح
+## التوصية النهائية
+(تتضمن سعر بيع مقترحاً وأقصى سعر شراء معقول في مزادات مشابهة)
+لا تتجاوز 380 كلمة.`;
+  aiRunning=true; const btn=$('#aiBtn'); btn.disabled=true; btn.textContent='جارٍ التحليل…';
+  out.innerHTML=`<div class="grid gap-2"><div class="skeleton h-4 w-3/4"></div><div class="skeleton h-4"></div><div class="skeleton h-4 w-5/6"></div></div>`;
+  let text='';
+  try{
+    const result=await FB.model.generateContentStream(prompt);
+    for await(const chunk of result.stream){ text+=chunk.text(); if(view.id===c.id && $('#aiOut')) $('#aiOut').innerHTML=md(text); }
+    c.ai={text,at:Date.now()}; if(canEditCar(c)) queueSave(c);
+    if(view.id===c.id && $('#aiOut')) $('#aiOut').innerHTML=md(text)+`<p class="hint mt-3">آخر تحليل: ${new Date(c.ai.at).toLocaleString('ar-OM')}</p>`;
+  }catch(e){
+    const s=String(e?.message||e);
+    const msg=/not found|404/i.test(s)?`النموذج ${GEMINI_MODEL} غير متاح. غيّري قيمة GEMINI_MODEL في أعلى الكود إلى نموذج Gemini حالي.`:
+      /quota|429|RESOURCE_EXHAUSTED/i.test(s)?'تجاوزتِ الحد المجاني لطلبات Gemini مؤقتاً؛ أعيدي المحاولة بعد دقيقة.':
+      /app-check|appcheck|App Check/i.test(s)?'تعذّر التحقق من الموقع عبر App Check. تأكدي من تسجيل التطبيق في Firebase ← App Check بمفتاح reCAPTCHA السري.':/api-not-enabled|PERMISSION|403/i.test(s)?'خدمة Gemini غير مفعّلة لهذا المشروع. فعّليها من Firebase ← AI Logic.':'تعذّر إكمال التحليل. أعيدي المحاولة.';
+    if($('#aiOut')) $('#aiOut').innerHTML=(text?md(text):'')+`<p class="err mt-2">${esc(msg)}</p>`;
+  }finally{ aiRunning=false; const b=$('#aiBtn'); if(b){b.disabled=false; b.textContent='إعادة التحليل';} }
+}
+
+/* ---------- الإعدادات ---------- */
+function openSettings(){
+  $('#setCurrency').innerHTML=Object.entries(CUR).map(([k,v])=>`<option value="${k}" ${settings.currency===k?'selected':''}>${v.n} — ${v.m}</option>`).join('');
+  $('#setCustoms').value=settings.customsPct; $('#setVat').value=settings.vatPct; $('#setRate').value=settings.rate; $('#setTheme').value=settings.theme||'';
+  $('#settingsDlg').classList.remove('hidden'); $('#setCurrency').focus();
+}
+$('#setCurrency').onchange=e=>{ $('#setRate').value=CUR[e.target.value].rate; };
+$('#settingsBtn').onclick=openSettings;
+$('#setCancel').onclick=()=>$('#settingsDlg').classList.add('hidden');
+$('#settingsDlg').onclick=e=>{ if(e.target.id==='settingsDlg') $('#settingsDlg').classList.add('hidden'); };
+document.addEventListener('keydown',e=>{ if(e.key==='Escape'){ $('#settingsDlg').classList.add('hidden'); document.querySelector('.lightbox')?.remove(); }});
+$('#setSave').onclick=()=>{
+  settings={...settings,currency:$('#setCurrency').value,customsPct:n($('#setCustoms').value),vatPct:n($('#setVat').value),rate:n($('#setRate').value)||CUR[$('#setCurrency').value].rate,theme:$('#setTheme').value};
+  applyTheme(); saveSettings(); $('#settingsDlg').classList.add('hidden'); toast('حُفظت الإعدادات'); route();
+};
+$('#logoutBtn').onclick=async()=>{ await Promise.all(Object.keys(pending).map(id=>flushNow(id))); location.hash=''; await FB.A.signOut(FB.auth); };
+$('#teamBtn').onclick=()=>{ location.hash='team'; };
+
+let toastT;
+function toast(msg){ document.querySelector('.toast')?.remove(); const t=document.createElement('div'); t.className='toast'; t.setAttribute('role','status'); t.textContent=msg; document.body.appendChild(t); clearTimeout(toastT); toastT=setTimeout(()=>t.remove(),2800); }
+
+/* ---------- التثبيت كتطبيق ---------- */
+if('serviceWorker' in navigator){ window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(e=>console.warn('SW',e))); }
+const isStandalone=()=>matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
+const isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+let deferredPrompt=null; const installBtn=$('#installBtn');
+window.addEventListener('beforeinstallprompt',e=>{ e.preventDefault(); deferredPrompt=e; if(!isStandalone()) installBtn.classList.remove('hidden'); });
+window.addEventListener('appinstalled',()=>{ installBtn.classList.add('hidden'); deferredPrompt=null; toast('ثُبّت كار فليب على جهازك'); });
+if(isIOS && !isStandalone()) installBtn.classList.remove('hidden');
+installBtn.onclick=async()=>{
+  if(deferredPrompt){ deferredPrompt.prompt(); const {outcome}=await deferredPrompt.userChoice; if(outcome==='accepted') installBtn.classList.add('hidden'); deferredPrompt=null; }
+  else if(isIOS) $('#iosDlg').classList.remove('hidden');
+};
+$('#iosClose').onclick=()=>$('#iosDlg').classList.add('hidden');
+
+/* ---------- التشغيل ---------- */
+app.addEventListener('input',onInput); app.addEventListener('change',onInput);
+applyTheme();
+if(!configured) renderSetup();
+else {
+  app.innerHTML=`<div class="grid sm:grid-cols-3 gap-4">${'<div class="skeleton h-40"></div>'.repeat(3)}</div>`;
+  initFirebase().catch(e=>{ app.innerHTML=`<div class="panel p-6"><p class="err">تعذّر تشغيل Firebase: ${esc(e.message)}</p><p class="hint mt-3">تحققي من لصق firebaseConfig كاملاً وصحيحاً.</p></div>`; });
+}
+</script>
+</body>
+</html>
